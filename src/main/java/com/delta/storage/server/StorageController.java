@@ -1,25 +1,22 @@
 package com.delta.storage.server;
 
-import com.delta.storage.server.filestore.Store;
-import org.apache.coyote.Request;
+import com.delta.storage.server.service.BucketService;
+import com.delta.storage.server.service.ObjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.Buffer;
 
 @RestController
 @RequestMapping()
 public class StorageController {
     @Autowired
-    Store store;
+    BucketService bucketService;
+
+    @Autowired
+    ObjectService objectService;
 
     @Bean
     public CommonsRequestLoggingFilter requestLoggingFilter() {
@@ -32,28 +29,33 @@ public class StorageController {
     }
 
     @GetMapping("/")
-    public String getBuckets()
-    {
+    public String getBuckets() {
         return "hello";
     }
 
     @GetMapping("/{bucket}")
-    public String getBucketByName(@PathVariable String bucket)
-    {
+    public String getBucketByName(@PathVariable String bucket) {
         System.out.println(bucket);
         return "hello bucket";
     }
 
-    @PutMapping(value = "/{bucket}", produces = { "application/xml", "text/xml" })
+    @PostMapping("/{bucket}/{key}")
+    public void postObject(@PathVariable String bucket, @PathVariable String key) {
+        System.out.println("here");
+    }
+
+    @PutMapping(value = "/{bucket}", produces = {"application/xml", "text/xml"})
     public void createBucket(@PathVariable String bucket) throws Exception {
         // ask store to create bucket
         System.out.println("Creating bucket");
-        store.createBucket(bucket);
+        bucketService.createBucket(bucket);
         return;
     }
 
     @PutMapping(value = "/{bucket}/{key}", consumes = "application/octet-stream", produces = "application/xml")
-    public void putObject(RequestEntity<byte[]> requestEntity, @PathVariable("bucket") String bucket, @PathVariable("key") String key) throws Exception{
-        store.storeObject(bucket, key, requestEntity.getBody());
+    public void putObject(RequestEntity<byte[]> requestEntity, @PathVariable("bucket") String bucket, @PathVariable("key") String key) throws Exception {
+        objectService.storeObject(bucket, key, requestEntity.getBody());
     }
+
+
 }

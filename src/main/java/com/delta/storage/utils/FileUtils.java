@@ -4,6 +4,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class FileUtils {
+    public static void mkdir(Path location) throws Exception
+    {
+        Files.createDirectory(location);
+    }
+
     public static void mkdirs(Path location) throws Exception
     {
         Files.createDirectories(location);
