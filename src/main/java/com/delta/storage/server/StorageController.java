@@ -1,12 +1,18 @@
 package com.delta.storage.server;
 
+import com.delta.storage.server.responses.InitMultipartResponse;
 import com.delta.storage.server.service.BucketService;
 import com.delta.storage.server.service.ObjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+
+import java.util.Map;
 
 
 @RestController
@@ -39,9 +45,24 @@ public class StorageController {
         return "hello bucket";
     }
 
-    @PostMapping("/{bucket}/{key}")
-    public void postObject(@PathVariable String bucket, @PathVariable String key) {
-        System.out.println("here");
+
+    @PostMapping(value = "/{bucket}/{key}", produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<?> postObject(@PathVariable String bucket, @PathVariable String key, @RequestParam Map<String, String> queryMethod) throws Exception {
+        if (queryMethod.size() != 1) {
+            // throw error
+        }
+        System.out.println("Starting Multipart Upload");
+
+        String method = queryMethod.entrySet().iterator().next().getKey();
+
+        switch (method) {
+            case "uploads": {
+                String uploadId = objectService.initMultipartUpload(bucket);
+                InitMultipartResponse initMultipartResponse = new InitMultipartResponse(bucket, key, uploadId);
+                return new ResponseEntity<>(initMultipartResponse,HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>("Not Implemented", HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping(value = "/{bucket}", produces = {"application/xml", "text/xml"})
@@ -53,8 +74,8 @@ public class StorageController {
     }
 
     @PutMapping(value = "/{bucket}/{key}", consumes = "application/octet-stream", produces = "application/xml")
-    public void putObject(RequestEntity<byte[]> requestEntity, @PathVariable("bucket") String bucket, @PathVariable("key") String key) throws Exception {
-        objectService.storeObject(bucket, key, requestEntity.getBody());
+    public void putObject(@PathVariable("bucket") String bucket, @PathVariable("key") String key, @RequestBody byte[] content) throws Exception {
+        objectService.storeObject(bucket, key, content);
     }
 
 
