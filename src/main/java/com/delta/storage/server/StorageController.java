@@ -8,10 +8,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Map;
 
 
@@ -39,10 +44,19 @@ public class StorageController {
         return "hello";
     }
 
-    @GetMapping("/{bucket}")
-    public String getBucketByName(@PathVariable String bucket) {
-        System.out.println(bucket);
-        return "hello bucket";
+    @GetMapping("/{bucket}/{key}")
+    public void getBucketByName(@PathVariable String bucket, @PathVariable String key, HttpServletResponse response) throws Exception {
+        System.out.println("Getting resource " + bucket + "/" + key);
+        File content = objectService.getObject(bucket, key);
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(content));
+        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        long length = content.length();
+        if(length <= Integer.MAX_VALUE)
+        {
+            response.setContentLength((int) length);
+        }
+        FileCopyUtils.copy(inputStream, response.getOutputStream());
+        return;
     }
 
 
@@ -63,7 +77,7 @@ public class StorageController {
                 InitMultipartResponse initMultipartResponse = new InitMultipartResponse(bucket, key, uploadId);
                 return new ResponseEntity<>(initMultipartResponse, HttpStatus.OK);
             }
-            case "uploadId" : {
+            case "uploadId": {
                 System.out.println("Finishing multipart upload");
                 String uploadId = value;
                 System.out.println(uploadId);

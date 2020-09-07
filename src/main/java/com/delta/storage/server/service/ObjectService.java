@@ -4,6 +4,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+
 
 @Service
 public class ObjectService {
@@ -29,5 +31,9 @@ public class ObjectService {
     public void completeMultipart(String bucket, String key, String uploadId) throws Exception {
         storeService.completMultipartUpload(bucket, key, uploadId);
         return;
+    }
+
+    public File getObject(String bucket, String key) {
+        return storeService.getObject(bucket, key);
     }
 }

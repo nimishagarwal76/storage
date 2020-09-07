@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 
+import java.io.File;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,5 +67,9 @@ public class StoreService {
         }
         FileUtils.rmrf(uploadDir);
         return "test";
+    }
+
+    public File getObject(String bucket, String key) {
+        return new File(Paths.get(root, bucket, key, "content").toString());
     }
 }

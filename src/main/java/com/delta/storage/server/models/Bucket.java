@@ -1,4 +1,5 @@
 package com.delta.storage.server.models;
 
-public class Metadata {
+public class Bucket {
+    String name;
 }
