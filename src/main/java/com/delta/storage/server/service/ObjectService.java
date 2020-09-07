@@ -21,4 +21,13 @@ public class ObjectService {
         storeService.initMultipartUpload(bucket, uploadId);
         return uploadId;
     }
+
+    public String storePart(String bucket, String uploadId, Integer partNumber, byte[] content) throws Exception {
+        return storeService.storePart(bucket, uploadId, partNumber, content);
+    }
+
+    public void completeMultipart(String bucket, String key, String uploadId) throws Exception {
+        storeService.completMultipartUpload(bucket, key, uploadId);
+        return;
+    }
 }
