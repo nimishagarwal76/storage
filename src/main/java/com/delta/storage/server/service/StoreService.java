@@ -22,7 +22,7 @@ public class StoreService {
 
     private static final Logger logger = LoggerFactory.getLogger(StoreService.class);
 
-    final static String CONTENT_PREFIX = ".content";
+    final static String CONTENT_FILE = "content";
     final static String METADATA_DIR = ".object_metadata";
 
     final static String MULTIPART_DIR = ".multipart";
@@ -46,7 +46,7 @@ public class StoreService {
     public void storeObject(String bucket, String key, byte[] content) throws Exception {
         Path location = Paths.get(root, bucket, key);
         FileUtils.mkdir(location);
-        FileUtils.writeBytes(Paths.get(root, bucket, key, key + ".content"), content);
+        FileUtils.writeBytes(Paths.get(root, bucket, key, CONTENT_FILE), content);
     }
 
 
@@ -67,25 +67,35 @@ public class StoreService {
         Path uploadDir = getMultipartUploadDir(bucket, uploadId);
         List<Path> files = FileUtils.listFiles(uploadDir);
 
+
         Path objectLocation = Paths.get(root, bucket, key);
+        FileUtils.mkdir(objectLocation);
+
+        Path objectContentLocation = Paths.get(root, bucket, key, CONTENT_FILE);
+
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+
         for (Path path : files) {
             byte[] content = Files.readAllBytes(path);
+            md5.update(content);
             System.out.println("Writing part" + path.toString());
-            FileUtils.appendBytes(objectLocation, content);
+            FileUtils.appendBytes(objectContentLocation, content);
         }
         FileUtils.rmrf(uploadDir);
-        return "test";
+        String hash = md5.digest().toString();
+        return hash;
     }
 
     /**
      * Returns a file instance for the specified object
+     *
      * @param bucket
      * @param key
      * @return File
      */
     public File getObjectFile(String bucket, String key) {
-        Path location = Paths.get(root, bucket, key, "content");
-        if(!FileUtils.exists(location)) {
+        Path location = Paths.get(root, bucket, key, CONTENT_FILE);
+        if (!FileUtils.exists(location)) {
             throw new NoSuchKeyException(String.format("%s/%s", bucket, key));
         }
         return new File(location.toString());

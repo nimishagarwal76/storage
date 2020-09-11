@@ -32,9 +32,8 @@ public class ObjectService {
         return storeService.storePart(bucket, uploadId, partNumber, content);
     }
 
-    public void completeMultipart(String bucket, String key, String uploadId) throws Exception {
-        storeService.completMultipartUpload(bucket, key, uploadId);
-        return;
+    public String completeMultipart(String bucket, String key, String uploadId) throws Exception {
+        return storeService.completMultipartUpload(bucket, key, uploadId);
     }
 
     public File getObjectFile(String bucket, String key) {

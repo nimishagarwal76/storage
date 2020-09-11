@@ -1,5 +1,6 @@
 package com.delta.storage.server;
 
+import com.delta.storage.server.responses.CompleteMutlipartResponse;
 import com.delta.storage.server.responses.InitMultipartResponse;
 import com.delta.storage.server.service.BucketService;
 import com.delta.storage.server.service.ObjectService;
@@ -84,8 +85,9 @@ public class StorageController {
             case "uploadId": {
                 System.out.println("Finishing multipart upload");
                 String uploadId = value;
-                System.out.println(uploadId);
-                objectService.completeMultipart(bucket, key, uploadId);
+                String hash = objectService.completeMultipart(bucket, key, uploadId);
+                CompleteMutlipartResponse completeMutlipartResponse = new CompleteMutlipartResponse("localhost", bucket, key, hash);
+                return new ResponseEntity<>(completeMutlipartResponse, HttpStatus.OK);
             }
         }
         return new ResponseEntity<>("Not Implemented", HttpStatus.BAD_REQUEST);
