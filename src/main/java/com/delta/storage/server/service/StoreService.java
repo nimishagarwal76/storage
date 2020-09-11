@@ -1,5 +1,6 @@
 package com.delta.storage.server.service;
 
+import com.delta.storage.server.exceptions.BucketAlreadyExistsException;
 import com.delta.storage.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,14 @@ public class StoreService {
         return Paths.get(root, bucket, MULTIPART_DIR, uploadId);
     }
 
-    public void createBucket(String bucket) throws Exception {
-        FileUtils.mkdirs(Paths.get(root, bucket));
+    public void createBucket(String bucket) {
+        Path location = Paths.get(root, bucket);
+        if (FileUtils.exists(location)) {
+            System.out.println("Error creating bucket. Already Exists");
+            throw new BucketAlreadyExistsException(bucket);
+        }
+
+        FileUtils.mkdirs(location);
     }
 
     public void storeObject(String bucket, String key, byte[] content) throws Exception {
@@ -59,9 +66,8 @@ public class StoreService {
         List<Path> files = FileUtils.listFiles(uploadDir);
 
         Path objectLocation = Paths.get(root, bucket, key);
-        for(Path path : files)
-        {
-            byte [] content = Files.readAllBytes(path);
+        for (Path path : files) {
+            byte[] content = Files.readAllBytes(path);
             System.out.println("Writing part" + path.toString());
             FileUtils.appendBytes(objectLocation, content);
         }

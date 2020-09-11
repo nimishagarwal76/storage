@@ -39,9 +39,11 @@ public class StorageController {
         return loggingFilter;
     }
 
-    @GetMapping("/")
-    public String getBuckets() {
-        return "hello";
+    @GetMapping(value = "/")
+    public String getBuckets() throws Exception {
+//        if(true)
+//        throw new RuntimeException("Something is wrong");
+        return "Wait for a while";
     }
 
     @GetMapping("/{bucket}/{key}")
@@ -60,7 +62,7 @@ public class StorageController {
     }
 
 
-    @PostMapping(value = "/{bucket}/{key}", produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/{bucket}/{key}")
     public ResponseEntity<?> postObject(@PathVariable String bucket, @PathVariable String key,
                                         @RequestParam Map<String, String> queryMethod) throws Exception {
         if (queryMethod.size() != 1) {
@@ -87,15 +89,13 @@ public class StorageController {
         return new ResponseEntity<>("Not Implemented", HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping(value = "/{bucket}", produces = {"application/xml", "text/xml"})
-    public void createBucket(@PathVariable String bucket) throws Exception {
-        // ask store to create bucket
+    @PutMapping(value = "/{bucket}")
+    public void createBucket(@PathVariable String bucket) {
         System.out.println("Creating bucket");
         bucketService.createBucket(bucket);
-        return;
     }
 
-    @PutMapping(value = "/{bucket}/{key}", consumes = "application/octet-stream", produces = "application/xml")
+    @PutMapping(value = "/{bucket}/{key}", consumes = "application/octet-stream")
     public void putObject(@PathVariable("bucket") String bucket, @PathVariable("key") String key,
                           @RequestBody byte[] content,
                           @RequestParam(required = false) String uploadId,

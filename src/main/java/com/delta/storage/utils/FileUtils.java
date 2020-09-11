@@ -1,6 +1,10 @@
 package com.delta.storage.utils;
 
+import com.delta.storage.server.exceptions.BucketAlreadyExistsException;
+import com.delta.storage.server.exceptions.InternalErrorException;
+
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,12 +13,21 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class FileUtils {
+    public static boolean exists(Path location) {
+        return Files.exists(location);
+    }
+
     public static void mkdir(Path location) throws Exception {
         Files.createDirectory(location);
     }
 
-    public static void mkdirs(Path location) throws Exception {
-        Files.createDirectories(location);
+    public static void mkdirs(Path location) {
+        try {
+            Files.createDirectories(location);
+        } catch (IOException ex) {
+            System.out.println(ex);
+            throw new InternalErrorException();
+        }
     }
 
     public static void writeBytes(Path location, byte[] content) throws Exception {
