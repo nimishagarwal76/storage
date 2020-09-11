@@ -1,7 +1,7 @@
 package com.delta.storage.utils;
 
-import com.delta.storage.server.exceptions.BucketAlreadyExistsException;
-import com.delta.storage.server.exceptions.InternalErrorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,33 +13,30 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class FileUtils {
+    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
+
     public static boolean exists(Path location) {
         return Files.exists(location);
     }
 
-    public static void mkdir(Path location) throws Exception {
+    public static void mkdir(Path location) throws IOException {
         Files.createDirectory(location);
     }
 
-    public static void mkdirs(Path location) {
-        try {
-            Files.createDirectories(location);
-        } catch (IOException ex) {
-            System.out.println(ex);
-            throw new InternalErrorException();
-        }
+    public static void mkdirs(Path location) throws IOException {
+        Files.createDirectories(location);
     }
 
-    public static void writeBytes(Path location, byte[] content) throws Exception {
+    public static void writeBytes(Path location, byte[] content) throws IOException {
         Files.write(location, content);
     }
 
-    public static void appendBytes(Path location, byte[] content) throws Exception {
+    public static void appendBytes(Path location, byte[] content) throws IOException {
         Files.write(location, content, Files.exists(location) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE);
     }
 
 
-    public static List<Path> listFiles(Path location) throws Exception {
+    public static List<Path> listFiles(Path location) throws IOException {
         List<Path> files = new ArrayList<>();
         try (DirectoryStream<Path> ds = Files.newDirectoryStream(location, "*")) {
             for (Path path : ds) {
@@ -58,10 +55,9 @@ public class FileUtils {
         return files;
     }
 
-    public static void rmrf(Path location) throws Exception {
+    public static void rmrf(Path location) throws IOException {
         try (Stream<Path> walk = Files.walk(location)) {
-            walk.sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
+            walk.map(Path::toFile)
                     .forEach(File::delete);
         }
     }

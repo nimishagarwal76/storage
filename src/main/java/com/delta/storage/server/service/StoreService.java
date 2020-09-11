@@ -1,13 +1,14 @@
 package com.delta.storage.server.service;
 
 import com.delta.storage.server.exceptions.BucketAlreadyExistsException;
+import com.delta.storage.server.exceptions.NoSuchKeyException;
 import com.delta.storage.utils.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,31 +20,32 @@ public class StoreService {
     @Value("${app.upload.dir:${user.home}/storage}")
     String root;
 
+    private static final Logger logger = LoggerFactory.getLogger(StoreService.class);
+
     final static String CONTENT_PREFIX = ".content";
     final static String METADATA_DIR = ".object_metadata";
 
     final static String MULTIPART_DIR = ".multipart";
 
     public StoreService() {
-
     }
 
     public Path getMultipartUploadDir(String bucket, String uploadId) {
         return Paths.get(root, bucket, MULTIPART_DIR, uploadId);
     }
 
-    public void createBucket(String bucket) {
+    public void createBucket(String bucket) throws Exception {
         Path location = Paths.get(root, bucket);
         if (FileUtils.exists(location)) {
             System.out.println("Error creating bucket. Already Exists");
             throw new BucketAlreadyExistsException(bucket);
         }
-
         FileUtils.mkdirs(location);
     }
 
     public void storeObject(String bucket, String key, byte[] content) throws Exception {
-        FileUtils.mkdir(Paths.get(root, bucket, key));
+        Path location = Paths.get(root, bucket, key);
+        FileUtils.mkdir(location);
         FileUtils.writeBytes(Paths.get(root, bucket, key, key + ".content"), content);
     }
 
@@ -75,7 +77,17 @@ public class StoreService {
         return "test";
     }
 
-    public File getObject(String bucket, String key) {
-        return new File(Paths.get(root, bucket, key, "content").toString());
+    /**
+     * Returns a file instance for the specified object
+     * @param bucket
+     * @param key
+     * @return File
+     */
+    public File getObjectFile(String bucket, String key) {
+        Path location = Paths.get(root, bucket, key, "content");
+        if(!FileUtils.exists(location)) {
+            throw new NoSuchKeyException(String.format("%s/%s", bucket, key));
+        }
+        return new File(location.toString());
     }
 }

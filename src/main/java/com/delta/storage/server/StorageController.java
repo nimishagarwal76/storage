@@ -3,6 +3,8 @@ package com.delta.storage.server;
 import com.delta.storage.server.responses.InitMultipartResponse;
 import com.delta.storage.server.service.BucketService;
 import com.delta.storage.server.service.ObjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,8 @@ public class StorageController {
     @Autowired
     ObjectService objectService;
 
+    private static final Logger logger = LoggerFactory.getLogger(StorageController.class);
+
     @Bean
     public CommonsRequestLoggingFilter requestLoggingFilter() {
         CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
@@ -41,15 +45,13 @@ public class StorageController {
 
     @GetMapping(value = "/")
     public String getBuckets() throws Exception {
-//        if(true)
-//        throw new RuntimeException("Something is wrong");
         return "Wait for a while";
     }
 
     @GetMapping("/{bucket}/{key}")
     public void getBucketByName(@PathVariable String bucket, @PathVariable String key, HttpServletResponse response) throws Exception {
-        System.out.println("Getting resource " + bucket + "/" + key);
-        File content = objectService.getObject(bucket, key);
+        logger.info("Getting resource " + bucket + "/" + key);
+        File content = objectService.getObjectFile(bucket, key);
         InputStream inputStream = new BufferedInputStream(new FileInputStream(content));
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         long length = content.length();
@@ -90,7 +92,7 @@ public class StorageController {
     }
 
     @PutMapping(value = "/{bucket}")
-    public void createBucket(@PathVariable String bucket) {
+    public void createBucket(@PathVariable String bucket) throws Exception {
         System.out.println("Creating bucket");
         bucketService.createBucket(bucket);
     }
@@ -102,9 +104,10 @@ public class StorageController {
                           @RequestParam(required = false) Integer partNumber,
                           HttpServletResponse response) throws Exception {
         if (uploadId == null) {
+            logger.info("Storing object {}/{}", bucket, key);
             objectService.storeObject(bucket, key, content);
         } else if (uploadId != null && partNumber != null) {
-            System.out.println("Doing multipart upload");
+            logger.info("Doing multipart upload Bucket : {} Key : {} UploadId : {}", bucket, key, uploadId);
             String hash = objectService.storePart(bucket, uploadId, partNumber, content);
             response.setHeader("ETag", hash);
         }

@@ -1,6 +1,8 @@
 package com.delta.storage.server.service;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import java.io.File;
 public class ObjectService {
     @Autowired
     StoreService storeService;
+
+    private static final Logger logger = LoggerFactory.getLogger(ObjectService.class);
 
     public void storeObject(String bucket, String key, byte[] content) throws Exception {
         // Validations done here
@@ -33,7 +37,7 @@ public class ObjectService {
         return;
     }
 
-    public File getObject(String bucket, String key) {
-        return storeService.getObject(bucket, key);
+    public File getObjectFile(String bucket, String key) {
+        return storeService.getObjectFile(bucket, key);
     }
 }
