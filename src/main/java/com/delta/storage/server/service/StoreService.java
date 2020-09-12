@@ -23,7 +23,7 @@ public class StoreService {
     private static final Logger logger = LoggerFactory.getLogger(StoreService.class);
 
     final static String CONTENT_FILE = "content";
-    final static String METADATA_DIR = ".object_metadata";
+    final static String METADATA_DIR = "metadata";
 
     final static String MULTIPART_DIR = ".multipart";
 
