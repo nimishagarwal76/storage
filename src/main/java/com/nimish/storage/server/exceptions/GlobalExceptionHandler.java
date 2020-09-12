@@ -1,4 +1,4 @@
-package com.delta.storage.server.exceptions;
+package com.nimish.storage.server.exceptions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

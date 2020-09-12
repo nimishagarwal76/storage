@@ -1,8 +1,7 @@
-package com.delta.storage.server.service;
+package com.nimish.storage.server.service;
 
-import com.delta.storage.server.exceptions.InvalidBucketNameException;
-import com.delta.storage.utils.BucketUtils;
-import com.delta.storage.utils.FileUtils;
+import com.nimish.storage.server.exceptions.InvalidBucketNameException;
+import com.nimish.storage.utils.BucketUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

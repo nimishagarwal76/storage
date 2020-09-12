@@ -1,4 +1,4 @@
-package com.delta.storage.server.models;
+package com.nimish.storage.server.models;
 
 public class Object {
     String key;

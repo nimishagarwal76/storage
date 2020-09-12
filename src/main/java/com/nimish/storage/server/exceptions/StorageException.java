@@ -1,4 +1,4 @@
-package com.delta.storage.server.exceptions;
+package com.nimish.storage.server.exceptions;
 
 public class StorageException extends RuntimeException {
     String code, message, resource;

@@ -1,9 +1,9 @@
-package com.delta.storage.server;
+package com.nimish.storage.server;
 
-import com.delta.storage.server.responses.CompleteMutlipartResponse;
-import com.delta.storage.server.responses.InitMultipartResponse;
-import com.delta.storage.server.service.BucketService;
-import com.delta.storage.server.service.ObjectService;
+import com.nimish.storage.server.responses.CompleteMutlipartResponse;
+import com.nimish.storage.server.responses.InitMultipartResponse;
+import com.nimish.storage.server.service.BucketService;
+import com.nimish.storage.server.service.ObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

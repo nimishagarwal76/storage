@@ -1,4 +1,4 @@
-package com.delta.storage.server.exceptions;
+package com.nimish.storage.server.exceptions;
 
 public class NoSuchKeyException extends StorageException{
     final static String CODE = "NoSuchKey";

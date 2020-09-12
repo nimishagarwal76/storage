@@ -1,8 +1,8 @@
-package com.delta.storage.server.service;
+package com.nimish.storage.server.service;
 
-import com.delta.storage.server.exceptions.BucketAlreadyExistsException;
-import com.delta.storage.server.exceptions.NoSuchKeyException;
-import com.delta.storage.utils.FileUtils;
+import com.nimish.storage.server.exceptions.BucketAlreadyExistsException;
+import com.nimish.storage.server.exceptions.NoSuchKeyException;
+import com.nimish.storage.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

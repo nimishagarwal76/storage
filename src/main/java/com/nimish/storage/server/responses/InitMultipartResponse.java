@@ -1,4 +1,4 @@
-package com.delta.storage.server.responses;
+package com.nimish.storage.server.responses;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;

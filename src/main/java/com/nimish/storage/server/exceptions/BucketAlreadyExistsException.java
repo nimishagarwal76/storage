@@ -1,4 +1,4 @@
-package com.delta.storage.server.exceptions;
+package com.nimish.storage.server.exceptions;
 
 public class BucketAlreadyExistsException extends StorageException {
     final static String CODE = "BucketAlreadyExists";

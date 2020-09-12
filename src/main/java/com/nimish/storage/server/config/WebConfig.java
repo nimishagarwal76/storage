@@ -1,4 +1,4 @@
-package com.delta.storage.server.config;
+package com.nimish.storage.server.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
