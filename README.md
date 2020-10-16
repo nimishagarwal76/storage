@@ -1,5 +1,5 @@
 # storage
-Simple storage server implemented using AWS S3 API. AWS provides its S3 bucket service which basically is used to store data over cloud, provide access to public or other users. The project aims to provide the same functionality, so for people having small projects, they can host this on their server and get signed links and get managed access to their resources. It follows S3 API which is public, so that to connect to the server people can plethora of existing tools in the market.
+Simple storage server implemented using AWS S3 API. AWS provides its S3 bucket service which basically is used to store data over cloud, provide access to public or other users. The project aims to provide the same functionality, so for people having small projects, they can host this on their server and get signed links and get managed access to their resources. It follows S3 API which is public, so that to connect to the server people can use plethora of existing tools in the market.
 
 ## Supported Methods
 ### Buckets
